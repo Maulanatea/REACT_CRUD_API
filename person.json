@@ -1,0 +1,39 @@
+{
+  "person": [
+    {
+      "name": "Buditt",
+      "email": "budi@gmail.com",
+      "id": "2557"
+    },
+    {
+      "name": "Rizkyng",
+      "email": "Rizkyng@gmail.com",
+      "id": "312b"
+    },
+    {
+      "id": "ed61",
+      "name": "budi anduk",
+      "email": "budianduk@gmail.com"
+    },
+    {
+      "id": "1c62",
+      "name": "tanto",
+      "email": "tanto@gmail.com"
+    },
+    {
+      "id": "bc0b",
+      "name": "fajar",
+      "email": "fajar@gmail.com"
+    },
+    {
+      "id": "6bfd",
+      "name": "boysad",
+      "email": "boysad@gmail.com"
+    },
+    {
+      "id": "8bd0",
+      "name": "APEL",
+      "email": "apel@gmail.com"
+    }
+  ]
+}
