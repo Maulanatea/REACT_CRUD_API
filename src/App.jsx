@@ -3,6 +3,7 @@ import "./App.css";
 import axios from "axios";
 
 function App() {
+  const [errMessage, setErrMessage] = useState("");
   const [users, setUsers] = useState([]);
   const [formData, setFormData] = useState({
     name: "",
@@ -18,8 +19,13 @@ function App() {
 
   // Ambil semua data dari API
   async function getAllData() {
-    const response = await axios.get(API_URL);
-    setUsers(response.data);
+    try {
+      const response = await axios.get(API_URL);
+      setUsers(response.data);
+      setErrMessage("");
+    } catch (err) {
+      setErrMessage("GAGAL MENGAMBIL DATA ", err.message);
+    }
   }
 
   // Tangani perubahan input
@@ -37,24 +43,43 @@ function App() {
     if (!formData.name || !formData.email) {
       return;
     }
+    try {
+      if (editData) {
+        // Mode edit Data
+        await axios.put(`${API_URL}/${editData}`, formData);
+      } else {
+        // Mode tambah Data
+        await axios.post(API_URL, formData);
+      }
 
-    if (editData) {
-      // Mode edit Data
-      await axios.put(`${API_URL}/${editData}`, formData);
-    } else {
-      // Mode tambah Data
-      await axios.post(API_URL, formData);
+      setFormData({ name: "", email: "" }); // reset form input
+      setEditData(null); // reset form edit
+      getAllData(); // refresh data
+    } catch (err) {
+      console.error("Gagal menyimpan data:", err.message);
     }
-
-    setFormData({ name: "", email: "" }); // reset form input
-    setEditData(null); // reset form edit
-    getAllData(); // refresh data
   }
 
-    // Saat klik Edit
+  // Saat klik Edit
   const handleEdit = (user) => {
     setFormData({ name: user.name, email: user.email });
     setEditData(user.id);
+  };
+
+  // Saat klik Delete
+  const handleDelete = async (id) => {
+    const konfirmasi = window.confirm("Apakah Anda yakin ingin menghapus data ini?");
+    if (!konfirmasi) {
+      return;
+    }
+    try{
+      await axios.delete(`${API_URL}/${id}`);
+      getAllData();
+    } catch (err) {
+      console.error("Gagal menghapus data:", err.message);
+      alert("Terjadi kesalahan saat menghapus data.");
+    }
+
   };
 
   return (
@@ -79,7 +104,14 @@ function App() {
           <button type="submit">{editData ? "Update" : "Simpan"}</button>
         </form>
       </div>
-
+      {errMessage && (
+        <div
+          className="error-message"
+          style={{ color: "red", marginBottom: "1rem" }}
+        >
+          {errMessage}
+        </div>
+      )}
       <div className="data-pengguna">
         <h3>Data Pengguna</h3>
         <ul>
@@ -93,7 +125,11 @@ function App() {
                   Edit
                 </a>{" "}
                 -{" "}
-                <a href="#" className="delete">
+                <a
+                  href="#"
+                  className="delete"
+                  onClick={() => handleDelete(user.id)}
+                >
                   Delete
                 </a>
               </div>
